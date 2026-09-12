@@ -9,7 +9,7 @@ MLFLOW_PID_FILE="$STATE_DIR/mlflow.pid"
 
 mkdir -p "$STATE_DIR"
 
-if [[ ! -f "$VENV_DIR/bin/activate" ]]; then
+if [[ ! -f "$VENV_DIR/Scripts/activate" ]]; then
   echo "Run the setup steps in README.md first."
   exit 1
 fi
@@ -25,14 +25,20 @@ if curl -fsS http://127.0.0.1:5001/health >/dev/null 2>&1; then
   exit 1
 fi
 
-source "$VENV_DIR/bin/activate"
+source "$VENV_DIR/Scripts/activate"
+
+# Step into the folder first so the path doesn't contain "AJ's Files" at all
+cd "$STATE_DIR"
 
 MLFLOW_TRACKING_URI="http://127.0.0.1:5001" nohup mlflow server \
   --host 127.0.0.1 \
   --port 5001 \
-  --backend-store-uri "sqlite:///$STATE_DIR/mlflow.db" \
-  --default-artifact-root "$STATE_DIR/mlruns" \
+  --backend-store-uri "sqlite:///mlflow.db" \
+  --default-artifact-root "./mlruns" \
   > "$MLFLOW_LOG" 2>&1 &
+
+# Return to your working root directory immediately
+cd "$WORKSHOP_ROOT"
 
 MLFLOW_PID=$!
 echo "$MLFLOW_PID" > "$MLFLOW_PID_FILE"

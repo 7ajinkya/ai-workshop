@@ -2,7 +2,7 @@
 set -u
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-PYTHON="$ROOT/.venv/bin/python"
+PYTHON="$ROOT/.venv/Scripts/python"
 FAILURES=0
 
 pass() { printf "✓ %s\n" "$1"; }
@@ -14,7 +14,7 @@ doctor() {
   echo
 
   if [[ -x "$PYTHON" ]]; then
-    VERSION="$($PYTHON --version 2>&1)"
+    VERSION="$("$PYTHON" --version 2>&1)"
     [[ "$VERSION" == Python\ 3.12.* ]] && pass "$VERSION" || fail "$VERSION — Python 3.12 is required"
   else
     fail "Virtual environment missing — run: python3.12 -m venv .venv"
@@ -29,7 +29,7 @@ doctor() {
   if [[ -x "$PYTHON" ]] && "$PYTHON" -c "import ipykernel, jupyterlab, langchain, langgraph, mlflow" >/dev/null 2>&1; then
     pass "Core Python dependencies import correctly"
   else
-    fail "Dependencies incomplete — run: $PYTHON -m pip install -r requirements.txt"
+    fail "Dependencies incomplete — run: '$PYTHON' -m pip install -r requirements.txt"
   fi
 
   if curl -fsS http://127.0.0.1:5001/health >/dev/null 2>&1; then
@@ -38,10 +38,10 @@ doctor() {
     fail "MLflow is not running — run: ./workshop start"
   fi
 
-  if curl -fsS http://127.0.0.1:8317/v1/models -H "Authorization: Bearer 123456" >/dev/null 2>&1; then
+  if curl -fsS http://127.0.0.1:11434/v1/models -H "Authorization: Bearer ollama" >/dev/null 2>&1; then
     pass "Workshop model endpoint is reachable"
   else
-    fail "Model endpoint is unavailable at http://127.0.0.1:8317/v1"
+    fail "Model endpoint is unavailable at http://127.0.0.1:11434/v1"
   fi
 
   if curl -fsS http://127.0.0.1:5001/gateway/mlflow/v1/chat/completions \

@@ -11,7 +11,7 @@ Use these instructions from the workshop root—the folder containing this READM
 ### 1. Check Python
 
 ```bash
-python3 --version
+python --version
 ```
 
 The result must start with `Python 3.12`. If it does not, install Python 3.12 before continuing. Do not use the machine's `pip3`; it may belong to another Python installation.
@@ -21,7 +21,7 @@ Windows learners should use WSL 2 so their commands match the course videos.
 ### 2. Create the workshop environment
 
 ```bash
-python3 -m venv .venv
+python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
@@ -39,9 +39,9 @@ python -m ipykernel install --user \
 
 ### 3. Confirm the workshop model is running
 
-The model service at `http://127.0.0.1:8317/v1` is separate from this repository. Your instructor or workshop host starts it. Ask the instructor to confirm it is available before configuring MLflow.
+The model service at `http://127.0.0.1:11434/v1` is separate from this repository. Your instructor or workshop host starts it. Ask the instructor to confirm it is available before configuring MLflow.
 
-The value `123456` used below is the local workshop credential, not a personal provider secret.
+The value `ollama` used below is the local workshop credential, not a personal provider secret.
 
 ### 4. Start MLflow
 
@@ -56,13 +56,13 @@ Open [http://127.0.0.1:5001](http://127.0.0.1:5001). Keep MLflow running while w
 In MLflow:
 
 1. Open **Settings → LLM Connections**.
-2. Create a connection named `local-gemini-key`.
+2. Create a connection named `local-ollama-key`.
 3. Select **OpenAI** because the workshop model implements the OpenAI-compatible API.
-4. Enter `123456` as the key.
-5. Set the base URL to `http://127.0.0.1:8317/v1` and save.
+4. Enter `ollama` as the key.
+5. Set the base URL to `http://127.0.0.1:11434/v1` and save.
 6. Open **AI Gateway → Endpoints**.
 7. Create an endpoint named `workshop-gemini`.
-8. Select the OpenAI provider, model `gemini-3-flash`, and connection `local-gemini-key`.
+8. Select the OpenAI provider, model `gpt-oss:120b-cloud` using custom model name (scroll down into the model selection and use custom model), and connection `local-ollama-key`.
 9. Enable usage tracking and save.
 
 ### 6. Verify everything
